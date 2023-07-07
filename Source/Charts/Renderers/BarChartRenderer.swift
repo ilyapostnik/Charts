@@ -593,7 +593,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                                     viewPortHandler.isInBoundsLeft(x)
                                     else { continue }
                                 
-                                let valueFormat = formatter.stringForValue(vals[k],
+                                let valueFormat = formatter.stringForValue(vals?[k] ?? 0.0,
                                                                            entry: e,
                                                                            dataSetIndex: dataSetIndex,
                                                                            viewPortHandler: viewPortHandler)
@@ -604,7 +604,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                                 if k + 1 < transformed.count {
                                     let rectSide = buffer[bufferIndex + k + 1]
                                     let ySide = rectSide.origin.y + (rectSide.height - valueFont.lineHeight)/2
-                                    let valueSideFormat = formatter.stringForValue(vals[k + 1],
+                                    let valueSideFormat = formatter.stringForValue(vals?[k + 1] ?? 0.0,
                                                                                    entry: e,
                                                                                    dataSetIndex: dataSetIndex,
                                                                                    viewPortHandler: viewPortHandler)
