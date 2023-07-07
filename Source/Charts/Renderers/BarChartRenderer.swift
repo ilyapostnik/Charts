@@ -583,25 +583,41 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 
                             trans.pointValuesToPixel(&transformed)
 
-                            for (value, transformed) in zip(values, transformed)
+                            for k in 0 ..< transformed.count
                             {
-                                let drawBelow = (value == 0.0 && negY == 0.0 && posY > 0.0) || value < 0.0
-                                let y = transformed.y + (drawBelow ? negOffset : posOffset)
+                                let rect = buffer[bufferIndex + k]
+                                let y = rect.origin.y + (rect.height - valueFont.lineHeight)/2
 
                                 guard viewPortHandler.isInBoundsRight(x) else { break }
                                 guard viewPortHandler.isInBoundsY(y),
                                     viewPortHandler.isInBoundsLeft(x)
                                     else { continue }
-
+                                
+                                let valueFormat = formatter.stringForValue(vals[k],
+                                                                           entry: e,
+                                                                           dataSetIndex: dataSetIndex,
+                                                                           viewPortHandler: viewPortHandler)
+                                if valueFormat == "0" || valueFormat == "-0" {
+                                    continue
+                                }
+                                
+                                if k + 1 < transformed.count {
+                                    let rectSide = buffer[bufferIndex + k + 1]
+                                    let ySide = rectSide.origin.y + (rectSide.height - valueFont.lineHeight)/2
+                                    let valueSideFormat = formatter.stringForValue(vals[k + 1],
+                                                                                   entry: e,
+                                                                                   dataSetIndex: dataSetIndex,
+                                                                                   viewPortHandler: viewPortHandler)
+                                    if (valueSideFormat != "0" || valueSideFormat != "-0") && y - (ySide + valueFont.lineHeight) < 0 {
+                                        continue
+                                    }
+                                }
+                                
                                 if dataSet.isDrawValuesEnabled
                                 {
                                     drawValue(
                                         context: context,
-                                        value: formatter.stringForValue(
-                                            value,
-                                            entry: e,
-                                            dataSetIndex: dataSetIndex,
-                                            viewPortHandler: viewPortHandler),
+                                        value: valueFormat,
                                         xPos: x,
                                         yPos: y,
                                         font: valueFont,

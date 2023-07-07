@@ -548,6 +548,8 @@ open class LineChartRenderer: LineRadarRenderer
                 // make sure the values do not interfear with the circles
                 var valOffset = Int(dataSet.circleRadius * 1.75)
                 
+                let negativeValueLabelBelow = dataSet.negativeValueLabelBelow
+                
                 if !dataSet.isDrawCirclesEnabled
                 {
                     valOffset = valOffset / 2
@@ -580,7 +582,7 @@ open class LineChartRenderer: LineRadarRenderer
                                                                   dataSetIndex: i,
                                                                   viewPortHandler: viewPortHandler),
                                          at: CGPoint(x: pt.x,
-                                                     y: pt.y - CGFloat(valOffset) - valueFont.lineHeight),
+                                                     y: pt.y + (e.y < 0 && negativeValueLabelBelow ? CGFloat(valOffset) : (-CGFloat(valOffset) - valueFont.lineHeight))),
                                          align: .center,
                                          angleRadians: angleRadians,
                                          attributes: [.font: valueFont,
